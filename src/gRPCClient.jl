@@ -119,58 +119,58 @@ export gRPCServiceCallException
     TEST_PORT = 8001
 
     @compile_workload begin
-        include("../test/gen/test/test_pb.jl")
+        # include("../test/gen/test/test_pb.jl")
 
-        # Initialize the gRPC package - grpc_shutdown() does the opposite for use with Revise.
-        grpc_init()
+        # # Initialize the gRPC package - grpc_shutdown() does the opposite for use with Revise.
+        # grpc_init()
 
-        # Unary 
-        client_unary = TestService_TestRPC_Client(TEST_HOST, TEST_PORT)
+        # # Unary 
+        # client_unary = TestService_TestRPC_Client(TEST_HOST, TEST_PORT)
 
-        # Sync API
-        test_response = grpc_sync_request(client_unary, TestRequest(1, Vector{UInt64}()))
+        # # Sync API
+        # test_response = grpc_sync_request(client_unary, TestRequest(1, Vector{UInt64}()))
 
-        # Async API
-        request = grpc_async_request(client_unary, TestRequest(1, Vector{UInt64}()))
-        test_response = grpc_async_await(client_unary, request)
+        # # Async API
+        # request = grpc_async_request(client_unary, TestRequest(1, Vector{UInt64}()))
+        # test_response = grpc_async_await(client_unary, request)
 
-        # Streaming 
-        @static if VERSION >= v"1.12"
+        # # Streaming 
+        # @static if VERSION >= v"1.12"
 
-            # Request 
-            client_request = TestService_TestClientStreamRPC_Client(TEST_HOST, TEST_PORT)
-            request_c = Channel{TestRequest}(16)
-            put!(request_c, TestRequest(1, zeros(UInt64, 1)))
-            close(request_c)
-            test_response = grpc_async_await(
-                client_request,
-                grpc_async_request(client_request, request_c),
-            )
+        #     # Request 
+        #     client_request = TestService_TestClientStreamRPC_Client(TEST_HOST, TEST_PORT)
+        #     request_c = Channel{TestRequest}(16)
+        #     put!(request_c, TestRequest(1, zeros(UInt64, 1)))
+        #     close(request_c)
+        #     test_response = grpc_async_await(
+        #         client_request,
+        #         grpc_async_request(client_request, request_c),
+        #     )
 
-            # Response 
-            client_response = TestService_TestServerStreamRPC_Client(TEST_HOST, TEST_PORT)
-            response_c = Channel{TestResponse}(16)
-            req = grpc_async_request(
-                client_response,
-                TestRequest(1, zeros(UInt64, 1)),
-                response_c,
-            )
-            test_response = take!(response_c)
-            grpc_async_await(req)
+        #     # Response 
+        #     client_response = TestService_TestServerStreamRPC_Client(TEST_HOST, TEST_PORT)
+        #     response_c = Channel{TestResponse}(16)
+        #     req = grpc_async_request(
+        #         client_response,
+        #         TestRequest(1, zeros(UInt64, 1)),
+        #         response_c,
+        #     )
+        #     test_response = take!(response_c)
+        #     grpc_async_await(req)
 
-            # Bidirectional 
-            client_bidirectional =
-                TestService_TestBidirectionalStreamRPC_Client(TEST_HOST, TEST_PORT)
-            request_c = Channel{TestRequest}(16)
-            response_c = Channel{TestResponse}(16)
-            put!(request_c, TestRequest(1, zeros(UInt64, 1)))
-            req = grpc_async_request(client_bidirectional, request_c, response_c)
-            test_response = take!(response_c)
-            close(request_c)
-            grpc_async_await(req)
-        end
+        #     # Bidirectional 
+        #     client_bidirectional =
+        #         TestService_TestBidirectionalStreamRPC_Client(TEST_HOST, TEST_PORT)
+        #     request_c = Channel{TestRequest}(16)
+        #     response_c = Channel{TestResponse}(16)
+        #     put!(request_c, TestRequest(1, zeros(UInt64, 1)))
+        #     req = grpc_async_request(client_bidirectional, request_c, response_c)
+        #     test_response = take!(response_c)
+        #     close(request_c)
+        #     grpc_async_await(req)
+        # end
 
-        grpc_shutdown()
+        # grpc_shutdown()
     end
 end
 
