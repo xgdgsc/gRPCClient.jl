@@ -15,7 +15,7 @@ function grpc_async_stream_request(
                 grpc_encode_request_iobuffer(
                     request,
                     encode_buf;
-                    max_send_message_length = req.max_send_message_length,
+                    max_send_message_length=req.max_send_message_length,
                 )
                 reqs_ready += 1
 
@@ -25,7 +25,7 @@ function grpc_async_stream_request(
                     grpc_encode_request_iobuffer(
                         request,
                         encode_buf;
-                        max_send_message_length = req.max_send_message_length,
+                        max_send_message_length=req.max_send_message_length,
                     )
                     reqs_ready += 1
                 end
@@ -68,9 +68,9 @@ function grpc_async_stream_request(
             end
 
         elseif isa(ex, gRPCServiceCallException)
-            handle_exception(req, ex; notify_ready = true)
+            handle_exception(req, ex; notify_ready=true)
         else
-            handle_exception(req, ex; notify_ready = true)
+            handle_exception(req, ex; notify_ready=true)
             @error "grpc_async_stream_request: unexpected exception" exception = ex
         end
     finally
@@ -96,8 +96,9 @@ function grpc_async_stream_response(
         end
     catch ex
         if !isa(ex, InvalidStateException)
-            handle_exception(req, ex; notify_ready = true)
+            handle_exception(req, ex; notify_ready=true)
             @error "grpc_async_stream_response: unexpected exception" exception = ex
+            rethrow(ex)
         end
     finally
         close(channel)
@@ -172,10 +173,10 @@ function grpc_async_request(
         IOBuffer(),
         Channel{IOBuffer}(16),
         NOCHANNEL;
-        deadline = client.deadline,
-        keepalive = client.keepalive,
-        max_send_message_length = client.max_send_message_length,
-        max_recieve_message_length = client.max_recieve_message_length,
+        deadline=client.deadline,
+        keepalive=client.keepalive,
+        max_send_message_length=client.max_send_message_length,
+        max_recieve_message_length=client.max_recieve_message_length,
     )
 
     request_task = Threads.@spawn grpc_async_stream_request(req, request)
@@ -249,7 +250,7 @@ function grpc_async_request(
 
     request_buf = grpc_encode_request_iobuffer(
         request;
-        max_send_message_length = client.max_send_message_length,
+        max_send_message_length=client.max_send_message_length,
     )
     seekstart(request_buf)
 
@@ -260,10 +261,10 @@ function grpc_async_request(
         IOBuffer(),
         NOCHANNEL,
         Channel{IOBuffer}(16);
-        deadline = client.deadline,
-        keepalive = client.keepalive,
-        max_send_message_length = client.max_send_message_length,
-        max_recieve_message_length = client.max_recieve_message_length,
+        deadline=client.deadline,
+        keepalive=client.keepalive,
+        max_send_message_length=client.max_send_message_length,
+        max_recieve_message_length=client.max_recieve_message_length,
     )
 
     response_task = Threads.@spawn grpc_async_stream_response(req, response)
@@ -354,10 +355,10 @@ function grpc_async_request(
         IOBuffer(),
         Channel{IOBuffer}(16),
         Channel{IOBuffer}(16);
-        deadline = client.deadline,
-        keepalive = client.keepalive,
-        max_send_message_length = client.max_send_message_length,
-        max_recieve_message_length = client.max_recieve_message_length,
+        deadline=client.deadline,
+        keepalive=client.keepalive,
+        max_send_message_length=client.max_send_message_length,
+        max_recieve_message_length=client.max_recieve_message_length,
     )
 
     request_task = Threads.@spawn grpc_async_stream_request(req, request)
