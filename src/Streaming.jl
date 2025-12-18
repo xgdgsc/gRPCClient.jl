@@ -99,6 +99,8 @@ function grpc_async_stream_response(
             handle_exception(req, ex; notify_ready=true)
             @error "grpc_async_stream_response: unexpected exception" exception = ex
             # rethrow(ex)
+        elseif isa(ex, InvalidStateException)
+            handle_exception(req, ex; notify_ready=true)
         end
     finally
         close(channel)
