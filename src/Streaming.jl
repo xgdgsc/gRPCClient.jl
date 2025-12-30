@@ -264,7 +264,7 @@ function grpc_async_request(
         IOBuffer(),
         NOCHANNEL,
         Channel{IOBuffer}(16);
-        deadline=client.deadline,
+        deadline=deadline,
         keepalive=client.keepalive,
         max_send_message_length=client.max_send_message_length,
         max_recieve_message_length=client.max_recieve_message_length,
