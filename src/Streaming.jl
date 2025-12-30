@@ -247,7 +247,8 @@ grpc_async_await(req)
 function grpc_async_request(
     client::gRPCServiceClient{TRequest,false,TResponse,true},
     request::TRequest,
-    response::Channel{TResponse},
+    response::Channel{TResponse};
+    deadline=client.deadline
 ) where {TRequest<:Any,TResponse<:Any}
 
     request_buf = grpc_encode_request_iobuffer(
